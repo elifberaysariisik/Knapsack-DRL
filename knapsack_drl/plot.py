@@ -1,4 +1,15 @@
+import os
 from pathlib import Path
+
+cache_root = Path(__file__).resolve().parents[1] / "work"
+(cache_root / "matplotlib-cache").mkdir(parents=True, exist_ok=True)
+(cache_root / "cache").mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(cache_root / "matplotlib-cache"))
+os.environ.setdefault("XDG_CACHE_HOME", str(cache_root / "cache"))
+
+import matplotlib
+
+matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -51,4 +62,3 @@ def create_paper_figure(scenario_directory: Path) -> Path:
     figure.savefig(output_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close(figure)
     return output_path
-
