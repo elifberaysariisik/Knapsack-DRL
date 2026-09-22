@@ -2,7 +2,6 @@
 
 Official implementation of the Knapsack-DRL method in **“Knapsack-DRL-Based Robust Resource Allocation for Wireless Networked Control Systems under Imperfect CSI.”**
 
-This repository contains only the proposed Knapsack-DRL method. Benchmark algorithms, parameter sweeps, and unrelated experiment code are intentionally excluded.
 
 ## Paper scenario
 
