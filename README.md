@@ -1,6 +1,6 @@
 # Knapsack-DRL
 
-Official implementation of the Knapsack-DRL method in **“Knapsack-DRL-Based Robust Resource Allocation for Wireless Networked Control Systems under Imperfect CSI.”**
+Implementation of the Knapsack-DRL method in **“Knapsack-DRL-Based Robust Resource Allocation for Wireless Networked Control Systems under Imperfect CSI.”**
 
 
 ## Paper scenario
@@ -84,10 +84,7 @@ The default scenario writes the following files under `artifacts/N30_sigma0.002/
 | `knapsack_drl.pt` | Trained D3QN checkpoint |
 | `training.csv` | Episode reward, loss, exploration, and teacher intervention data |
 | `evaluation.csv` | Power, PAoI, schedulability, feasibility, and decision-time data |
-| `knapsack_drl_paper_figure.pdf` | IEEE-sized vector figure |
-| `knapsack_drl_paper_figure.png` | 300 dpi figure preview |
 
-The plotting stage draws only Knapsack-DRL in IEEE blue (`#0072BD`). The four panels contain the smoothed training reward, total-power ECDF, normalized PAoI metric, and normalized schedulability load.
 
 ## Code hierarchy
 
@@ -142,4 +139,4 @@ For each sensor, the student proposes a robustly feasible blocklength. The teach
 pytest -q
 ```
 
-The tests cover the finite-blocklength identities, PAoI boundary, future minimum load, guarded feasible set, and teacher projection.
+
