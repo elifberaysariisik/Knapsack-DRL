@@ -16,7 +16,7 @@ The implementation uses the simulation parameters reported in the paper:
 | Parameter | Value |
 |---|---:|
 | Bandwidth | 100 kHz |
-| Blocklength actions | 25–200 symbols |
+| Blocklength actions | 1–200 symbols |
 | Packet size | 100 bits |
 | Schedulability budget | 0.20 |
 | PAoI reliability | 0.99 |
