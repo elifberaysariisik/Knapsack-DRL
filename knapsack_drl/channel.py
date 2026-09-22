@@ -105,8 +105,8 @@ class ChannelGenerator:
             "relative_error_variance": self.relative_error_variance.copy(),
             "bernstein_power_raw": bound,
             "bernstein_power": np.maximum(bound, np.finfo(float).tiny),
+            "second_estimate": second_estimate,
         }
-        self.update_error_variance(estimated_channel, second_estimate)
         return frame
 
     def sample_feasible(
@@ -121,6 +121,9 @@ class ChannelGenerator:
                 continue
             table = build_candidate_table(frame["bernstein_power"], self.config)
             if frame_is_feasible(table, self.config):
+                self.update_error_variance(
+                    frame["estimated_channel"],
+                    frame["second_estimate"],
+                )
                 return frame, table, attempt
         raise RuntimeError("no robustly feasible frame was sampled")
-
