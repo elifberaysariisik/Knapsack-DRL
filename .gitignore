@@ -4,5 +4,6 @@ __pycache__/
 .venv/
 checkpoints/
 results/
+artifacts*/
+work/
 *.pt
-
