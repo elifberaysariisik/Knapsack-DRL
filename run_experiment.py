@@ -4,13 +4,12 @@ from pathlib import Path
 
 from knapsack_drl.config import ExperimentConfig
 from knapsack_drl.evaluate import evaluate
-from knapsack_drl.plot import create_paper_figure
 from knapsack_drl.train import train
 
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("train", "evaluate", "plot", "all"))
+    parser.add_argument("command", choices=("train", "evaluate", "all"))
     parser.add_argument("--nodes", type=int, default=30)
     parser.add_argument("--sigma-e2", type=float, default=0.002)
     parser.add_argument("--train-episodes", type=int, default=10_000)
@@ -57,13 +56,7 @@ def main() -> None:
         )
         print(result_path)
         print(json.dumps(summary, indent=2))
-    if arguments.command in ("plot", "all"):
-        figure_path = create_paper_figure(
-            config.output_directory(arguments.output)
-        )
-        print(figure_path)
 
 
 if __name__ == "__main__":
     main()
-

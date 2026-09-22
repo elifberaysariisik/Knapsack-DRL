@@ -26,6 +26,8 @@ The implementation uses the simulation parameters reported in the paper:
 | CSI outage tolerance | 0.05 |
 | Initial CSI-error variance estimate | 0.01 |
 | EWMA coefficient | 0.1 |
+| Sensor distance | 5–20 m |
+| Channel correlation | 0.6 |
 | Training episodes | 10,000 |
 | Test realizations | 500 |
 | D3QN hidden layers | 32, 64, 300 |
@@ -60,7 +62,6 @@ Run each stage separately:
 ```bash
 python run_experiment.py train
 python run_experiment.py evaluate
-python run_experiment.py plot
 ```
 
 Select another network size, CSI-error variance, or output directory:
@@ -99,7 +100,6 @@ Knapsack-DRL/
 │   ├── evaluate.py
 │   ├── network.py
 │   ├── physics.py
-│   ├── plot.py
 │   ├── replay.py
 │   ├── safety.py
 │   └── train.py
@@ -126,8 +126,7 @@ Knapsack-DRL/
 | `environment.py` | Builds the six-element sequential state, executes teacher-verified allocations, computes the paper reward, and reports constraint metrics. |
 | `train.py` | Runs the 10,000-episode sequential training procedure and saves the model and blue-curve training data. |
 | `evaluate.py` | Evaluates the trained model on 500 independent realizations using true channels for PAoI verification. |
-| `plot.py` | Generates the single-method IEEE figure from saved CSV data. |
-| `run_experiment.py` | Provides the `train`, `evaluate`, `plot`, and `all` commands. |
+| `run_experiment.py` | Provides the `train`, `evaluate`, and `all` commands. |
 
 ## Safety layer
 
@@ -138,5 +137,3 @@ For each sensor, the student proposes a robustly feasible blocklength. The teach
 ```bash
 pytest -q
 ```
-
-

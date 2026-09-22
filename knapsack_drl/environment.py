@@ -1,4 +1,3 @@
-import math
 import time
 
 import numpy as np
@@ -9,12 +8,6 @@ from knapsack_drl.physics import normalized_paoi_metric, packet_error_probabilit
 from knapsack_drl.safety import sequential_feasible_mask, verify_action
 
 
-def logarithmic_gain_feature(value: float) -> float:
-    return float(
-        np.clip((math.log10(max(float(value), 1e-16)) + 16.0) / 12.0, 0.0, 1.0)
-    )
-
-
 def build_state(
     node_index: int,
     remaining_budget: float,
@@ -22,20 +15,14 @@ def build_state(
     config: ExperimentConfig,
 ) -> np.ndarray:
     remaining_nodes = max(config.nodes - node_index, 1)
-    estimated_power = float(frame["estimated_power"][node_index])
-    error_variance = float(frame["error_variance"][node_index])
-    uncertainty_ratio = error_variance / max(
-        estimated_power + error_variance,
-        np.finfo(float).tiny,
-    )
     return np.asarray(
         [
             (node_index + 1) / config.nodes,
             remaining_budget / config.scheduling_budget,
             remaining_budget / remaining_nodes,
-            logarithmic_gain_feature(estimated_power),
-            uncertainty_ratio,
-            logarithmic_gain_feature(frame["bernstein_power"][node_index]),
+            np.abs(frame["normalized_estimate"][node_index]),
+            frame["relative_error_variance"][node_index],
+            frame["bernstein_power_normalized"][node_index],
         ],
         dtype=np.float32,
     )
@@ -134,15 +121,27 @@ def evaluate_allocation(
     required_power = table["transmit_power_w"][nodes, actions]
     applied_power = np.minimum(required_power, config.max_tx_power_w)
     load = table["load"][nodes, actions]
-    packet_error = packet_error_probability(
+    robust_packet_error = packet_error_probability(
+        frame["bernstein_power"],
+        config.blocklengths[actions],
+        applied_power,
+        config.noise_power_w,
+        config.packet_bits,
+    )
+    realized_packet_error = packet_error_probability(
         frame["true_power"],
         config.blocklengths[actions],
         applied_power,
         config.noise_power_w,
         config.packet_bits,
     )
-    paoi = normalized_paoi_metric(
-        packet_error,
+    robust_paoi = normalized_paoi_metric(
+        robust_packet_error,
+        sampling_count,
+        config.reliability,
+    )
+    realized_paoi = normalized_paoi_metric(
+        realized_packet_error,
         sampling_count,
         config.reliability,
     )
@@ -151,9 +150,16 @@ def evaluate_allocation(
     return {
         "reward": frame_reward(actions, table, config),
         "total_power_w": total_power,
-        "normalized_paoi_max": float(paoi.max()),
+        "normalized_paoi_max": float(robust_paoi.max()),
+        "realized_normalized_paoi_max": float(realized_paoi.max()),
+        "realized_normalized_paoi_mean": float(realized_paoi.mean()),
         "normalized_scheduling_load": normalized_load,
-        "paoi_violation": float(np.any(paoi > 1.0 + config.numerical_tolerance)),
+        "paoi_violation": float(
+            np.any(robust_paoi > 1.0 + config.numerical_tolerance)
+        ),
+        "realized_paoi_violation": float(
+            np.any(realized_paoi > 1.0 + config.numerical_tolerance)
+        ),
         "scheduling_violation": float(
             normalized_load > 1.0 + config.numerical_tolerance
         ),
@@ -166,4 +172,3 @@ def evaluate_allocation(
         "teacher_intervention_rate": float(allocation["intervention_rate"]),
         "decision_time_ms": float(allocation["decision_time_ms"]),
     }
-

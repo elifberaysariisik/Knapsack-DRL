@@ -10,7 +10,7 @@ class ExperimentConfig:
 
     nodes: int = 30
     bandwidth_hz: float = 100_000.0
-    blocklength_min: int = 25
+    blocklength_min: int = 1
     blocklength_max: int = 200
     packet_bits: int = 100
     reliability: float = 0.99
@@ -27,8 +27,9 @@ class ExperimentConfig:
     reference_distance_m: float = 1.0
     pathloss_exponent: float = 3.76
     shadowing_std_db: float = 4.0
-    distance_min_m: float = 25.0
-    distance_max_m: float = 100.0
+    distance_min_m: float = 5.0
+    distance_max_m: float = 20.0
+    channel_correlation: float = 0.6
     train_episodes: int = 10_000
     test_episodes: int = 500
     topology_seed: int = 2026
@@ -98,4 +99,3 @@ class ExperimentConfig:
     def output_directory(self, root: Path) -> Path:
         variance = format(self.csi_error_variance, ".6g")
         return root / f"N{self.nodes}_sigma{variance}"
-

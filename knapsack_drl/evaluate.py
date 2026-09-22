@@ -47,10 +47,16 @@ def evaluate(
     summary = {
         "mean_total_power_w": float(results["total_power_w"].mean()),
         "mean_normalized_paoi_max": float(results["normalized_paoi_max"].mean()),
+        "mean_realized_normalized_paoi": float(
+            results["realized_normalized_paoi_mean"].mean()
+        ),
         "mean_normalized_scheduling_load": float(
             results["normalized_scheduling_load"].mean()
         ),
         "paoi_violation_rate": float(results["paoi_violation"].mean()),
+        "realized_paoi_violation_rate": float(
+            results["realized_paoi_violation"].mean()
+        ),
         "scheduling_violation_rate": float(results["scheduling_violation"].mean()),
         "transmit_power_violation_rate": float(
             results["transmit_power_violation"].mean()
@@ -61,4 +67,3 @@ def evaluate(
         "mean_decision_time_ms": float(results["decision_time_ms"].mean()),
     }
     return result_path, summary
-
