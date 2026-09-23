@@ -137,3 +137,5 @@ For each sensor, the student proposes a robustly feasible blocklength. The teach
 ```bash
 pytest -q
 ```
+
+If you have any questions or suggestions, please email me at esariisik25@ku.edu.tr.
